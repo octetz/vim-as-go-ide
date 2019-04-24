@@ -4,7 +4,7 @@ It is 2019 and there are many great ways to write Go. [Goland](https://www.jetbr
 
 ## The Past and The Present
 
-Before LSPs, we _generally_ used [gocode](https://github.com/nsf/gocode), one of the many tools packaged in `vim-go`. I personally had a love-hate relationship with it, namely I found small changes in my environment would break to tool. Additionally, Go `1.10` changed their binary package architecture breaking godoc. There was some time of issue and eventually the community moved to a [fork](https://github.com/mdempsky/gocode). Then Go `1.11` introduced [Go modules](https://blog.golang.org/modules2019), so to support this we had to move to [another fork](https://github.com/stamblerre/gocode). I am super thankful for the awesomeness `gocode` brought us over the years, but very happy to see LSPs providing convergence for how editors/IDEs support programming languages.
+Before LSPs, we _generally_ used [gocode](https://github.com/nsf/gocode), one of the many tools packaged in `vim-go`. I personally had a love-hate relationship with it, namely I found small changes in my environment could break it. Additionally, Go `1.10` changed the binary package architecture breaking `gocode`. Eventually the community moved to a [fork](https://github.com/mdempsky/gocode). Then, Go `1.11` introduced [Go modules](https://blog.golang.org/modules2019), so we moved to [another fork](https://github.com/stamblerre/gocode). I am super thankful for the awesomeness `gocode` brought us over the years. And I am very happy to see LSPs providing convergence for how editors/IDEs support programming languages.
 
 Go's official LSP is [gopls](https://github.com/golang/go/wiki/gopls) pronounced "go please".
 

@@ -1,3 +1,15 @@
+---
+title: VIM as a Go (Golang) IDE with LSP and vim-go
+header-includes:
+    <link rel="stylesheet" type="text/css" href="styles.css">
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="octetz.com" />
+    <meta name="twitter:title" content="VIM As a Go (Golang) IDE with LSP and vim-go" />
+    <meta name="twitter:description" content="Exploring how Vim is a highly-capable Go IDE in 2019+." />
+    <meta name="twitter:image" content="https://octetz.com/posts/img/vim-as-go-ide-banner.png" />
+---
+
 # VIM as a Go (Golang) IDE with LSP and vim-go
 
 It is 2019 and there are many great ways to write Go. [Goland](https://www.jetbrains.com/go) is available for us familiar with the Intellij suite, [Visual Studio Code](https://code.visualstudio.com) (VSCode) has proven to be one of the most capable and enjoyable to use text editor/IDEs, and of course, Vim. I am no Vim-purist, I think if you are more productive in a different tool you should use it. But Vim remains a great multi-purpose tool in 2019+. Traditionally, writing Go in Vim meant adding the [vim-go](https://github.com/fatih/vim-go) plugin and coding away. Today, vim-go remains a great plugin, but with the introduction of the [Language Server Protocol](https://langserver.org) (LSP) means some of the vim-go concerns can be moved outside of it.
@@ -6,9 +18,9 @@ It is 2019 and there are many great ways to write Go. [Goland](https://www.jetbr
 
 Before LSPs, we _generally_ used [gocode](https://github.com/nsf/gocode), one of the many tools packaged in `vim-go`. I personally had a love-hate relationship with it, namely I found small changes in my environment could break it. Additionally, Go `1.10` changed the binary package architecture breaking `gocode`. Eventually the community moved to a [fork](https://github.com/mdempsky/gocode). Then, Go `1.11` introduced [Go modules](https://blog.golang.org/modules2019), so we moved to [another fork](https://github.com/stamblerre/gocode). I am super thankful for the awesomeness `gocode` brought us over the years. And I am very happy to see LSPs providing convergence for how editors/IDEs support programming languages.
 
-Go's official LSP is [gopls](https://github.com/golang/go/wiki/gopls) pronounced "go please".
+Go's official LSP is [gopls](https://github.com/golang/go/wiki/gopls), pronounced "go please".
 
-vim-go `1.20` (April 22, 2019) introduced `gopls` support. This made autocomplete use `gopls` by default. `:GoDef` and `GoInfo` can also be set to use `gopls` if you add the following configuration.
+vim-go `1.20` (April 22, 2019) introduced `gopls` support. Autocomplete now uses `gopls` by default. `:GoDef` and `GoInfo` can also be set to use `gopls` if you add the following configuration.
 
 ```
 let g:go_def_mode='gopls'
@@ -67,7 +79,7 @@ In order to follow this setup, you'll need the following.
     vim +PlugInstall
     ```
 
-  output:
+		output:
 
     ```
     Updated. Elapsed time: 0.011105 sec.
@@ -137,10 +149,10 @@ In order to follow this setup, you'll need the following.
 
 1. Try some of the following commands to verify `vim-go` is working.
 
-  * `:GoDoc` (or shift+K) over a symbol to get the documention in a Vim buffer.
-  * `:GoDef` go to definition (soon to be replaced by PLS client LSP client in next section.
-  * `:GoDocBrowser` over a sypbol to open godoc.org.
-  * `:GoBuild` to build the project.
+		* `:GoDoc` (or shift+K) over a symbol to get the documention in a Vim buffer.
+		* `:GoDef` go to definition (soon to be replaced by PLS client LSP client in next section.
+		* `:GoDocBrowser` over a symbol to open godoc.org.
+		* `:GoBuild` to build the project.
 
 <center><img src="img/vim-go.gif" class="large-img"></center>
 
@@ -159,7 +171,7 @@ In order to follow this setup, you'll need the following.
     call plug#end()
     ```
   
-  If you do not have `yarn` installed, the above post step will fail and coc.nvim will not work.
+		If you do not have `yarn` installed, the above post step will fail and `coc.nvim` will not work.
 
 1. Add the following default configuration to `~/.config/nvim/init.vim`.
 

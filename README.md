@@ -12,7 +12,7 @@ header-includes:
 
 It is 2019 and there are many great ways to write Go. [Goland](https://www.jetbrains.com/go) is available for Intellij users, [Visual Studio Code](https://code.visualstudio.com) (VSCode) is an incredibly enjoyable editor / IDE, and of course, Vim. I am no Vim-purist, I think if you are more productive in a different tool you should use it. But Vim remains a great multi-purpose tool in 2019+. Traditionally, writing Go in Vim meant adding the [vim-go](https://github.com/fatih/vim-go) plugin and coding away. Today, `vim-go` remains a great plugin, but with the introduction of the [Language Server Protocol](https://langserver.org) (LSP), there are new options worth exploring.
 
-<center><iframe width="800" height="450" src="https://www.youtube.com/embed/0OhFJylG1AI" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></center>
+<center><iframe width="800" height="450" src="https://www.youtube.com/embed/T32yqetyy8s" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></center>
 
 ## The Past and The Present
 

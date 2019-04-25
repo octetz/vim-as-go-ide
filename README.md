@@ -1,26 +1,26 @@
 ---
-title: VIM as a Go (Golang) IDE with LSP and vim-go
+title: Vim as a Go (Golang) IDE using LSP and vim-go
 header-includes:
-    <link rel="stylesheet" type="text/css" href="styles.css">
-
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="octetz.com" />
-    <meta name="twitter:title" content="VIM As a Go (Golang) IDE with LSP and vim-go" />
+    <meta name="twitter:title" content="Vim As a Go (Golang) IDE using LSP and vim-go" />
     <meta name="twitter:description" content="Exploring how Vim is a highly-capable Go IDE in 2019+." />
     <meta name="twitter:image" content="https://octetz.com/posts/img/vim-as-go-ide-banner.png" />
 ---
 
-# VIM as a Go (Golang) IDE with LSP and vim-go
+# Vim as a Go (Golang) IDE using LSP and vim-go
 
-It is 2019 and there are many great ways to write Go. [Goland](https://www.jetbrains.com/go) is available for us familiar with the Intellij suite, [Visual Studio Code](https://code.visualstudio.com) (VSCode) has proven to be one of the most capable and enjoyable to use text editor/IDEs, and of course, Vim. I am no Vim-purist, I think if you are more productive in a different tool you should use it. But Vim remains a great multi-purpose tool in 2019+. Traditionally, writing Go in Vim meant adding the [vim-go](https://github.com/fatih/vim-go) plugin and coding away. Today, vim-go remains a great plugin, but with the introduction of the [Language Server Protocol](https://langserver.org) (LSP) means some of the vim-go concerns can be moved outside of it.
+It is 2019 and there are many great ways to write Go. [Goland](https://www.jetbrains.com/go) is available for Intellij users, [Visual Studio Code](https://code.visualstudio.com) (VSCode) is an incredibly enjoyable editor / IDE, and of course, Vim. I am no Vim-purist, I think if you are more productive in a different tool you should use it. But Vim remains a great multi-purpose tool in 2019+. Traditionally, writing Go in Vim meant adding the [vim-go](https://github.com/fatih/vim-go) plugin and coding away. Today, `vim-go` remains a great plugin, but with the introduction of the [Language Server Protocol](https://langserver.org) (LSP), there are new options worth exploring.
+
+<center><iframe width="800" height="450" src="https://www.youtube.com/embed/0OhFJylG1AI" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></center>
 
 ## The Past and The Present
 
-Before LSPs, we _generally_ used [gocode](https://github.com/nsf/gocode), one of the many tools packaged in `vim-go`. I personally had a love-hate relationship with it, namely I found small changes in my environment could break it. Additionally, Go `1.10` changed the binary package architecture breaking `gocode`. Eventually the community moved to a [fork](https://github.com/mdempsky/gocode). Then, Go `1.11` introduced [Go modules](https://blog.golang.org/modules2019), so we moved to [another fork](https://github.com/stamblerre/gocode). I am super thankful for the awesomeness `gocode` brought us over the years. And I am very happy to see LSPs providing convergence for how editors/IDEs support programming languages.
+Before LSPs, we _generally_ used [gocode](https://github.com/nsf/gocode), one of the many tools packaged in `vim-go`. I personally had a love-hate relationship with it. Namely, I found small changes in my environment could break it. Additionally, Go `1.10` changed the binary package architecture breaking `gocode`. Eventually the community moved to a [fork](https://github.com/mdempsky/gocode). Then, Go `1.11` introduced [Go modules](https://blog.golang.org/modules2019), so we moved to [another fork](https://github.com/stamblerre/gocode). I am super thankful for the awesomeness `gocode` brought us over the years. And I am very happy to see LSPs providing convergence for how editors/IDEs support programming languages.
 
 Go's official LSP is [gopls](https://github.com/golang/go/wiki/gopls), pronounced "go please".
 
-vim-go `1.20` (April 22, 2019) introduced `gopls` support. Autocomplete now uses `gopls` by default. `:GoDef` and `GoInfo` can also be set to use `gopls` if you add the following configuration.
+vim-go `1.20` (April 22, 2019) introduced `gopls` support. Autocomplete now uses `gopls` by default. `vim-go` commands `:GoDef` and `:GoInfo` can also be set to use `gopls` if you add the following configuration.
 
 ```
 let g:go_def_mode='gopls'
@@ -29,36 +29,49 @@ let g:go_info_mode='gopls'
 
 This means, triggering omnifunc `<C-r><C-o>`, will make a call out to `gopls`.
 
-While this is great, my **preference** is to limit the concerns of `vim-go` to doing go-tool specific tasks such as `build`, `run`, `doc`, etc. Then, use a LSP client to handle autocompletion and traversing code (e.g. going to a definition). The breakdown of responsibilities would briefly look as follows.
+While this is great, my **preference** is to limit the concerns of `vim-go` to go-tool specific tasks such as `build`, `run`, `doc`, etc. Then, use an LSP client to handle autocompletion and traversing code (e.g. going to a definition). This maintains consistency in how these tasks are executed across languages without new plugins. All you need is a language server. The breakdown of responsibilities is as follows.
 
 <center><img src="img/vim-go-resp.png" class="large-img"></center>
 
-The two best client options are [Conquer of Completion (coc.nvim)](https://github.com/neoclide/coc.nvim) and [LanguageClient-neovim](https://github.com/autozimu/LanguageClient-neovim). I recently switched to coc.nvim, and that is what this tutorial covers. However, LanguageClient-neovim is an excellent LSP client. Arguably more minimal (and written in rust!). `coc.nvim`'s benefit is that it has integration with some existing VSCode plugins. I like this a lot as I do not think the VSCode plugin market will slow down soon.
+The two best client options are [Conquer of Completion (coc.nvim)](https://github.com/neoclide/coc.nvim) and [LanguageClient-neovim](https://github.com/autozimu/LanguageClient-neovim). I recently switched to `coc.nvim`; that is what this tutorial covers. However, LanguageClient-neovim is an excellent LSP client. Arguably more minimal (and written in rust!). A benefit that sold me on `coc.nvim`'s is the ability to leverage VSCode plugins.
 
-The following write-up and video details my Vim setup for Go in 2019 and why Vim is still my tool of choice.
+The following details my Vim setup for Go in 2019 and why Vim is still my tool of choice.
 
 ## Prerequisites
 
-In order to follow this setup, you'll need the following.
+In order to follow this setup, you need to complete following.
 
 * [Neovim](https://github.com/neovim/neovim/wiki/Installing-Neovim) installed
+
   * I use Neovim instead of Vim, however, much of this tutorial can be done in Vim 8. Should you choose Vim, configuration file locations will vary.
 
 * [vim-plug](https://github.com/junegunn/vim-plug) installed
+
   * Manages Vim plugins in simple and minimal manner.
  
 * [yarn](https://yarnpkg.com/en/docs/install) installed
-  * Required by the autocomplete tooling [coc.nvim](https://github.com/neoclide/coc.nvim), which we'll cover later.
 
-* `$GOPATH/$GOBIN` set
-  * See https://golang.org/cmd/go/#hdr-Environment_variables
-  * These aren't entirely necessary, but I like them, and the examples will use them.
+  * Required by the autocomplete tooling [coc.nvim](https://github.com/neoclide/coc.nvim).
+
+* `$GOPATH` and `$GOBIN` set
+
+  * See [https://golang.org/cmd/go/#hdr-Environment_variables](https://golang.org/cmd/go/#hdr-Environment_variables)
+  * These are not required, but I like them, and the examples will use them.
   * You may also want to append `$GOBIN` onto your `$PATH`.
 
 * `~/.config/nvim/init.vim` created
+
   * This is the `.vimrc` of Neovim.
 
 ## Installing vim-go
+
+1. Edit `init.vim`.
+
+    ```
+    vim ~/.config/nvim/init.vim
+    ```
+
+    _`vim` maps to `nvim` in my system._
 
 1. Add the `vim-go` plugin to the list of plugins managed by vim-plug.
 
@@ -79,7 +92,7 @@ In order to follow this setup, you'll need the following.
     vim +PlugInstall
     ```
 
-		output:
+    output:
 
     ```
     Updated. Elapsed time: 0.011105 sec.
@@ -102,6 +115,7 @@ In order to follow this setup, you'll need the following.
     ```
 
     output:
+
     ```
     asmfmt
     errcheck
@@ -125,15 +139,15 @@ In order to follow this setup, you'll need the following.
     motion
     ```
 
-  These binaries will be called by various commands in `vim-go`. Note that `gopls` was installed to. Your LSP will point to this binary.
+    _These binaries will be called by various commands in `vim-go`. Note that `gopls` was installed. Your LSP client will point to this binary._
 
 1. Download a Go-based project.
 
     ```
-    go get -d github.com/heptio/velero &&\
+    go get -d github.com/heptio/velero
     ```
 
-  * `-d`: Instruct `go` to not install the package.
+    * `-d`: Instruct `go` to not install the package.
 
 1. Enter the project's directory.
 
@@ -149,14 +163,20 @@ In order to follow this setup, you'll need the following.
 
 1. Try some of the following commands to verify `vim-go` is working.
 
-		* `:GoDoc` (or shift+K) over a symbol to get the documention in a Vim buffer.
-		* `:GoDef` go to definition (soon to be replaced by PLS client LSP client in next section.
-		* `:GoDocBrowser` over a symbol to open godoc.org.
-		* `:GoBuild` to build the project.
+    * `:GoDoc` (or `shift + K`) over a symbol to get the documention in a Vim buffer.
+    * `:GoDef` go to definition (soon to be replaced by LSP client).
+    * `:GoDocBrowser` over a symbol to open godoc.org.
+    * `:GoBuild` to build the project.
 
 <center><img src="img/vim-go.gif" class="large-img"></center>
 
 ## Installing coc.nvim
+
+1. Edit `init.vim`.
+
+    ```
+    vim ~/.config/nvim/init.vim
+    ```
 
 1. Update your plugin list in `~/.config/nvim/init.vim` to contain the following. 
 
@@ -170,33 +190,22 @@ In order to follow this setup, you'll need the following.
     Plug 'neoclide/coc.nvim', {'do': 'yarn install --frozen-lockfile'}
     call plug#end()
     ```
-  
-		If you do not have `yarn` installed, the above post step will fail and `coc.nvim` will not work.
 
-1. Add the following default configuration to `~/.config/nvim/init.vim`.
+1. Copy the following into your `init.vim`.
 
     ```
     " -------------------------------------------------------------------------------------------------
     " coc.nvim default settings
     " -------------------------------------------------------------------------------------------------
 
-
     " if hidden is not set, TextEdit might fail.
     set hidden
-
-    " Some servers have issues with backup files, see #649
-    set nobackup
-    set nowritebackup
-
     " Better display for messages
     set cmdheight=2
-
     " Smaller updatetime for CursorHold & CursorHoldI
     set updatetime=300
-
     " don't give |ins-completion-menu| messages.
     set shortmess+=c
-
     " always show signcolumns
     set signcolumn=yes
 
@@ -216,10 +225,6 @@ In order to follow this setup, you'll need the following.
     " Use <c-space> to trigger completion.
     inoremap <silent><expr> <c-space> coc#refresh()
 
-    " Use <cr> to confirm completion, `<C-g>u` means break undo chain at current position.
-    " Coc only does snippet and additional edit on confirm.
-    inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
-
     " Use `[c` and `]c` to navigate diagnostics
     nmap <silent> [c <Plug>(coc-diagnostic-prev)
     nmap <silent> ]c <Plug>(coc-diagnostic-next)
@@ -233,62 +238,12 @@ In order to follow this setup, you'll need the following.
     " Use U to show documentation in preview window
     nnoremap <silent> U :call <SID>show_documentation()<CR>
 
-    function! s:show_documentation()
-      if (index(['vim','help'], &filetype) >= 0)
-        execute 'h '.expand('<cword>')
-      else
-        call CocAction('doHover')
-      endif
-    endfunction
-
-    " Highlight symbol under cursor on CursorHold
-    autocmd CursorHold * silent call CocActionAsync('highlight')
-
     " Remap for rename current word
     nmap <leader>rn <Plug>(coc-rename)
 
     " Remap for format selected region
     vmap <leader>f  <Plug>(coc-format-selected)
     nmap <leader>f  <Plug>(coc-format-selected)
-
-    augroup mygroup
-      autocmd!
-      " Setup formatexpr specified filetype(s).
-      autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
-      " Update signature help on jump placeholder
-      autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
-    augroup end
-
-    " Remap for do codeAction of selected region, ex: `<leader>aap` for current paragraph
-    vmap <leader>a  <Plug>(coc-codeaction-selected)
-    nmap <leader>a  <Plug>(coc-codeaction-selected)
-
-    " Remap for do codeAction of current line
-    nmap <leader>ac  <Plug>(coc-codeaction)
-    " Fix autofix problem of current line
-    nmap <leader>qf  <Plug>(coc-fix-current)
-
-    " Use `:Format` to format current buffer
-    command! -nargs=0 Format :call CocAction('format')
-
-    " Use `:Fold` to fold current buffer
-    command! -nargs=? Fold :call     CocAction('fold', <f-args>)
-
-
-    " Add diagnostic info for https://github.com/itchyny/lightline.vim
-    let g:lightline = {
-          \ 'active': {
-          \   'left': [ [ 'mode', 'paste' ],
-          \             [ 'cocstatus', 'readonly', 'filename', 'modified' ] ]
-          \ },
-          \ 'component_function': {
-          \   'cocstatus': 'coc#status'
-          \ },
-          \ }
-
-
-
-    " Using CocList
     " Show all diagnostics
     nnoremap <silent> <space>a  :<C-u>CocList diagnostics<cr>
     " Manage extensions
@@ -307,25 +262,36 @@ In order to follow this setup, you'll need the following.
     nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
     ```
 
-  These provide some sensible key mappings and other settings. You can add or remove as you feel appropriate.
+    _The above is a smaller and slightly modified configuration based on [coc.nvim's recommendations](https://github.com/neoclide/coc.nvim/tree/3bdfdd2a86046d7b0938da6e0f940ec39f999bca#example-vim-configuration)._
 
-1. Tell `vim-go` to not take `gd` as its shortcut for go to definition.
+1. Copy the following to tell `vim-go` to not map `gd` as its shortcut for go to definition.
 
-		```
-		" disable vim-go :GoDef short cut (gd)
-		" this is handled by LanguageClient [LC]
-		let g:go_def_mapping_enabled = 0
-		```
+    ```
+    " disable vim-go :GoDef short cut (gd)
+    " this is handled by LanguageClient [LC]
+    let g:go_def_mapping_enabled = 0
+    ```
 
-	  This is disabled to allow `coc.vim` to do the `gd` resolution.
+	  _This is disabled to allow `coc.vim` to do the `gd` resolution._
 
-1. Save the file and exit Vim.
+1. Save `init.vim` and exit Vim.
 
 1. Install the `coc.nvim` plugin.
 
-		```
-		vim +PlugInstall
-		```
+    ```
+    vim +PlugInstall
+    ```
+
+    output:
+
+    ```
+    Updated. Elapsed time: 0.027422 sec.
+    [==]
+
+    - Finishing ... Done!
+    - vim-go: Already installed
+    - coc.nvim: Installed
+    ```
 
 1. Open Vim.
 
@@ -336,6 +302,7 @@ In order to follow this setup, you'll need the following.
     ```
 
     output:
+
     ```
     ## versions
 
@@ -356,23 +323,23 @@ In order to follow this setup, you'll need the following.
     :CocConfig
     ```
 
-		You may be prompted to install the JSON plugin. If you say yes, it'll validate JSON based on structure and schema. Pretty cool!
+    _You may be prompted to install the JSON plugin. If you say yes, it will validate JSON based on structure and schema. Pretty cool!_
 
-1. Setup the following [languageserver](https://github.com/neoclide/coc.nvim/wiki/Language-servers) to the configuration.
+1. Setup the following [languageserver](https://github.com/neoclide/coc.nvim/wiki/Language-servers) in your configuration.
 
-		```json
-		{
-			"languageserver": {
-				"golang": {
-					"command": "gopls",
-					"rootPatterns": ["go.mod", ".vim/", ".git/", ".hg/"],
-					"filetypes": ["go"]
-				}
-			}
-		}
-		```
+    ```json
+    {
+      "languageserver": {
+        "golang": {
+          "command": "gopls",
+          "rootPatterns": ["go.mod", ".vim/", ".git/", ".hg/"],
+          "filetypes": ["go"]
+        }
+      }
+    }
+    ```
 
-		This assumes gopls is in your `$PATH`, if its not, point to it in your `$GOBIN`.
+    _This assumes `gopls` is in your `$PATH`, if its not, point to it in your `$GOBIN`._
 
 1. Restart Vim.
 
@@ -380,22 +347,32 @@ In order to follow this setup, you'll need the following.
 
 1. Verify `coc.nvim` is working by trying the following commands.
 
-	* Type a package and `.`, autocomplete should pop up with suggestions from `[LS]` (Language Server).
-	* Use `gd` to go to a definition.
-  * Run `:CocList diagnostics` to see and search through all problems with the project.
+    * Test dot (`.`) completion in a function
+
+      * autocomplete should pop up with suggestions from `[LS]` (Language Server).
+
+    * Use `gd` to go to a definition.
+
+      * you can use `ctrl + o` to go back.
+
+    * Run `:CocList diagnostics` to see and search through all problems with the project.
+
+      * `space + a` is a shortcut for this.
 
 <center><img src="img/coc-vim.gif" class="large-img"></center>
 
 ## Play Around!
 
-Now your environment is setup and it is just a matter of becoming more familiar with `vim-go` and `coc.nvim`.  Be sure to check the video at the top of this post for examples of my favorite tools and shortcuts. Also `vim-go` and `coc.nvim` have create documentation. It can be accessed in Vim with the following commands.
+Now your environment is setup and it is time to become familiar with `vim-go` and `coc.nvim`.  Be sure to check the video at the top of this write-up for examples of my shortcuts. `vim-go` and `coc.nvim` have great documentation. It can be accessed in Vim with the following commands.
 
 vim-go
+
 ```
 :help vim-go
 ```
 
 coc.nvim
+
 ```
-:help coc.nvim
+:help coc-nvim
 ```
